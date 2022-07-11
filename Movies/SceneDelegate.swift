@@ -16,7 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        window?.windowScene = windowScene
+        window?.rootViewController = makeMainTabBarViewController()
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -47,6 +51,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func makeSearchViewController() -> SearchViewController {
+        let repository = MoviesRepository()
+        let viewModel = SearchViewModel(repository: repository)
+        let searchViewController = SearchViewController(viewModel: viewModel)
+        return searchViewController
+    }
 
+    func makeHomeViewController() -> HomeViewController {
+        let homeViewController = HomeViewController()
+        return homeViewController
+    }
+
+    func makeUpComingViewController() -> UpComingViewController {
+        let upComingViewController = UpComingViewController()
+        return upComingViewController
+    }
+
+    func makeDownloadsViewController() -> DownloadsViewController {
+        let downloadsViewController = DownloadsViewController()
+        return downloadsViewController
+    }
+
+    func makeMainTabBarViewController() -> MainTabBarViewController {
+        let mainTabBar = MainTabBarViewController(vc1: makeHomeViewController(), vc2: makeUpComingViewController(), vc3: makeSearchViewController(), vc4: makeDownloadsViewController())
+        return mainTabBar
+    }
 }
 
